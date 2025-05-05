@@ -134,7 +134,7 @@ void PythonState::operator<<(const PyThreadState *const tstate) noexcept
 #if GREENLET_PY311
   #if GREENLET_PY312
     this->py_recursion_depth = tstate->py_recursion_limit - tstate->py_recursion_remaining;
-    this->c_recursion_depth = Py_C_RECURSION_LIMIT - tstate->c_recursion_remaining;
+    this->c_recursion_depth = Py_GetRecursionLimit() - tstate->py_recursion_remaining;
   #else // not 312
     this->recursion_depth = tstate->recursion_limit - tstate->recursion_remaining;
   #endif // GREENLET_PY312
@@ -209,7 +209,7 @@ void PythonState::operator>>(PyThreadState *const tstate) noexcept
 #if GREENLET_PY311
   #if GREENLET_PY312
     tstate->py_recursion_remaining = tstate->py_recursion_limit - this->py_recursion_depth;
-    tstate->c_recursion_remaining = Py_C_RECURSION_LIMIT - this->c_recursion_depth;
+    tstate->py_recursion_remaining = Py_GetRecursionLimit() - this->c_recursion_depth;
     this->unexpose_frames();
   #else // \/ 3.11
     tstate->recursion_remaining = tstate->recursion_limit - this->recursion_depth;
